@@ -1,40 +1,67 @@
 import java.sql.*;
+import java.util.Scanner;
 
 public class server{
-    public static Connection con= null;
-//    public void connect() throws Exception{
-    static {
-    String url = "jdbc:mysql://localhost:3306/vehiclerentsystem";
-    String ur = "root";
-    String pw = "Santhosh@13";
-    try {
-        Class.forName("com.mysql.cj.jdbc.Driver");
-        con = DriverManager.getConnection(url, ur, pw);
-    }
-    catch (Exception e){
-        System.out.println(e);
-    }
-//    }
-    }
+    public Scanner scan=new Scanner(System.in);
+    private Connection con;
+    private Statement st;
 
-    public User signIn(String username,String password) throws Exception {
-
-//        String query = "select password from customer where username = "+username;
-        String query="SELECT * FROM CUSTOMER";
-        Statement st= con.createStatement();
-        ResultSet rs= st.executeQuery(query);
-        if(rs.next()){
-            User s=new User();
-            s.username=username;
-            s.password=password;
-            System.out.println(s.password);
-            return s;
+    public server(){
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            con= DriverManager.getConnection("jdbc:mysql://localhost:3306/vehicleRentSystem","root","Santhosh@13");
+            st= con.createStatement();
         }
-        else {
-            System.out.println("Account not found");
-            return null;
+        catch (Exception e){
+            System.out.println("CLASS NOT FOUNT");
         }
+    }
 
+    public String signIn(){
+        System.out.println("Enter username or mail Id");
+        String username= scan.nextLine();
+        System.out.println("Enter password");
+        String password= scan.nextLine();
+        try {
+            String query = "SELECT * FROM USER WHERE USERNAME='" + username + "';";
+            ResultSet rs = st.executeQuery(query);
+            if(rs.next()){
+                if(rs.getString(3).equals(password)){
+                    return rs.getString(4);
+                }
+                else {
+                    System.out.println("INCORRECT PASSWORD");
+                }
+            }
+            else {
+                System.out.println("USER NOT FOUND");
+                return "USER NOT FOUND";
+            }
+        }
+        catch (Exception e){
+            System.out.println("Couldn't SIGN IN!!!");
+        }
+        return "";
+
+    }
+
+    public int signup(){
+        try {
+            System.out.println("Enter username or mail Id");
+            String username= scan.nextLine();
+            System.out.println("Enter password");
+            String password= scan.nextLine();
+            System.out.println("Enter the Mobile number:");
+            String mobile= scan.next();
+
+            String query = "INSERT INTO user (username,password,role) Values ('" + username + "','" + password + "','customer')";
+            int count = st.executeUpdate(query);
+
+            return count;
+        }
+        catch (Exception e){
+            return -1;
+        }
 
 
     }
