@@ -1,4 +1,5 @@
 public class User {
+    private int userId;
     private String username;
     private String password;
     private String role;
@@ -11,6 +12,14 @@ public class User {
         this.username=username;
         this.password=password;
         this.role=role;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
     public String getUsername() {
